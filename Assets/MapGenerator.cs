@@ -16,13 +16,20 @@ public class MapGenerator : MonoBehaviour
 
     void Awake()
     {
+//is there some factor of size that matters here? something fishy about the spheres not being on the center of hexes
+//^tested and the hizmos are not on the same places as the meshes.....
+//*2????
         //For 9 players, identify root hexes for two "rows" of islands; each row will either have 4 or 5 islands in it:
+        islandRootHexes = new List<Hex>();
         int northernColumnCount = Random.Range(4,6); //randomly select either 4 or 5
+        Debug.Log("Northern columns count: " + northernColumnCount);
         for (int i = 0; i < 9; i++) {
-            int q = mapHeight*(i < northernColumnCount? 5 : 2)/7; //either 5/7ths or 4/7ths of mapHeight
-            int columnSpacing = mapWidth/(i < northernColumnCount? northernColumnCount : 9 - northernColumnCount);
-            int r = (columnSpacing/2) + (i*columnSpacing); //start from offset to ensure islands do not go to edges of map width- we want only oceans on width
+            int r = (int)Mathf.Round(mapHeight*(i < northernColumnCount ? 2 : 5)/7); //either 2/7ths or 5/7ths of mapHeight
+            float columnSpacing = (float)mapWidth/(i < northernColumnCount ? (float)northernColumnCount : 9f - (float)northernColumnCount);
+            Debug.Log("Column spacing = " + columnSpacing);
+            int q = (int)Mathf.Round((columnSpacing/2f) + ((i < northernColumnCount ? (float)i : (float)i - northernColumnCount)*columnSpacing)); //start from offset to ensure islands do not go to edges of map width- we want only oceans on width
             islandRootHexes.Add(new Hex(q, r, -q-r));
+            Debug.Log("New root island hex created with qrs = " + q + ", " + r + ", " + (-q-r));
         }
 
         //Create a new layout
@@ -45,28 +52,44 @@ public class MapGenerator : MonoBehaviour
                 Hex hex = new Hex(q,r,-q-r);
                 tile.hex = hex;
                 hex.tile = tile;
+                Debug.Log("Adding new hex to map with index " + index + " with current position equal to " + tile.transform.position + "and Hex q r s = " + tile.hex.q +","+tile.hex.r + "," + tile.hex.s);
                 PositionTile(tile);
                 map.Add(index, tile);
-                foreach(Hex rootHex in islandRootHexes) {
+                /*foreach(Hex rootHex in islandRootHexes) {
                     if (hex.Equals(rootHex)) {
                         hex.height = 2;
                     }
-                }
-                Debug.Log("Added new hex to map with index " + index + " with x position equal to " + tile.transform.localPosition);
+                }*/
                 index++;
             }
         }
     }
 
     //Debugging option to draw hex locations:
-    /*void OnDrawGizmos(){
+    void OnDrawGizmos(){
         if (map != null) {
             Gizmos.color = Color.green;
             foreach (DictionaryEntry kvPair in map) {
                 Tile tile = (Tile)kvPair.Value;
                 Point point = layout.HexToPixel(tile.hex);
                 Vector3 pixel = new Vector3((float)point.x,(float)point.y,0f);
-                Gizmos.DrawSphere(pixel,1);
+                Debug.Log("Debug logging tile with index " + kvPair.Key + " at position " + pixel);
+                Gizmos.DrawSphere(pixel,0.5f);
+            }
+        }
+    }
+    /*void OnDrawGizmos(){
+        if (map != null) {
+            foreach (DictionaryEntry kvPair in map) {
+                bool root = false;
+                Tile tile = (Tile)kvPair.Value;
+                foreach (Hex hex in islandRootHexes) {
+                    if (tile.hex.Equals(hex)) {root = true;}
+                }
+                Gizmos.color = root ? Color.red : Color.green;
+                Point point = layout.HexToPixel(tile.hex);
+                Vector3 pixel = new Vector3((float)point.x,(float)point.y,0f);
+                Gizmos.DrawSphere(pixel,0.5f);
             }
         }
     }*/
@@ -74,6 +97,7 @@ public class MapGenerator : MonoBehaviour
     void PositionTile(Tile tile) {
         Point point = layout.HexToPixel(tile.hex);
         tile.transform.position = new Vector3((float)point.x,(float)point.y,0f);
+        Debug.Log("Reositioned tile to position " + tile.transform.position);
     }
 
     // Start is called before the first frame update
@@ -82,5 +106,6 @@ public class MapGenerator : MonoBehaviour
         Debug.Log("Height colour 11 = " + Height.hexColours[11]);
         Debug.Log("Height colour -3 = " + Height.hexColours[-3]);
         Debug.Log("Height land type for -4 = " + Height.landTypes[-4]);
+        UnityEditor.SceneView.RepaintAll();
     }
 }

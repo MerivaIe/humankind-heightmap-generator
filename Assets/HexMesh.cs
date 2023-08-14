@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class HexMesh : MonoBehaviour {
-
 	Mesh hexMesh;
 	List<Vector3> vertices;
 	List<int> triangles;

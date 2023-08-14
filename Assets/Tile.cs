@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class Tile : MonoBehaviour
 {
     public Hex hex;
@@ -21,6 +23,8 @@ public class Tile : MonoBehaviour
     void Start() {
         //Happens after Awake() because tile positioning occurs there
         Triangulate();
+        Text text = gameObject.GetComponentInChildren<Text>();
+        text.text = hex.q + "," + hex.r + "," + hex.s;
     }
 
     public void Triangulate () {
@@ -31,7 +35,7 @@ public class Tile : MonoBehaviour
         Vector3 center = gameObject.transform.position;
 		for (int i = 0; i < 6; i++) {
 			AddTriangle(center, center + Hex.corners[i], center + Hex.corners[i+1]);
-            AddTriangleColor();
+            //AddTriangleColor();
             //Debug.Log("i = " + i + ". Added triangle with center and two corners " + (vert1) + " and " + (vert2));
 		}
         //Debug.Log("Triangulated tile");
