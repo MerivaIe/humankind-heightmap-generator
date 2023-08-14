@@ -6,7 +6,7 @@ using UnityEngine;
 public struct Hex
 {
     
-	public const float outerRadius = 2f; //dependent on size defined in MapGenerator; hardcoding for PoC for now
+	public const float outerRadius = 1f; //same as size defined in MapGenerator; hardcoding for PoC for now
 	public const float innerRadius = outerRadius * 0.866025404f;
     public static Vector3[] corners = {
 		new Vector3(0f, outerRadius, 0f),
@@ -88,12 +88,10 @@ public struct Hex
         return Add(Hex.diagonals[direction]);
     }
 
-
     public int Length()
     {
         return (int)((Math.Abs(q) + Math.Abs(r) + Math.Abs(s)) / 2);
     }
-
 
     public int Distance(Hex b)
     {

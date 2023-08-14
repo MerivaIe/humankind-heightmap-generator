@@ -25,9 +25,10 @@ public class MapGenerator : MonoBehaviour
         Debug.Log("Northern columns count: " + northernColumnCount);
         for (int i = 0; i < 9; i++) {
             int r = (int)Mathf.Round(mapHeight*(i < northernColumnCount ? 2 : 5)/7); //either 2/7ths or 5/7ths of mapHeight
-            float columnSpacing = (float)mapWidth/(i < northernColumnCount ? (float)northernColumnCount : 9f - (float)northernColumnCount);
+            float columnSpacing = (float)mapWidth/(i < northernColumnCount ? (float)northernColumnCount: 9f - (float)northernColumnCount);
             Debug.Log("Column spacing = " + columnSpacing);
-            int q = (int)Mathf.Round((columnSpacing/2f) + ((i < northernColumnCount ? (float)i : (float)i - northernColumnCount)*columnSpacing)); //start from offset to ensure islands do not go to edges of map width- we want only oceans on width
+            int r_offset = (int)Mathf.Floor((float)r/2.0f); // or r>>1
+            int q = (int)Mathf.Round((columnSpacing/2f) - r_offset + (columnSpacing*(i < northernColumnCount ? (float)i : (float)i - northernColumnCount))); //start from offset to ensure islands do not go to edges of map width- we want only oceans on width
             islandRootHexes.Add(new Hex(q, r, -q-r));
             Debug.Log("New root island hex created with qrs = " + q + ", " + r + ", " + (-q-r));
         }
@@ -65,20 +66,8 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    //Debugging option to draw hex locations:
-    void OnDrawGizmos(){
-        if (map != null) {
-            Gizmos.color = Color.green;
-            foreach (DictionaryEntry kvPair in map) {
-                Tile tile = (Tile)kvPair.Value;
-                Point point = layout.HexToPixel(tile.hex);
-                Vector3 pixel = new Vector3((float)point.x,(float)point.y,0f);
-                Debug.Log("Debug logging tile with index " + kvPair.Key + " at position " + pixel);
-                Gizmos.DrawSphere(pixel,0.5f);
-            }
-        }
-    }
-    /*void OnDrawGizmos(){
+    //Debugging option to draw hex locations when gameObject is selected:
+    void OnDrawGizmosSelected(){
         if (map != null) {
             foreach (DictionaryEntry kvPair in map) {
                 bool root = false;
@@ -92,7 +81,7 @@ public class MapGenerator : MonoBehaviour
                 Gizmos.DrawSphere(pixel,0.5f);
             }
         }
-    }*/
+    }
 
     void PositionTile(Tile tile) {
         Point point = layout.HexToPixel(tile.hex);

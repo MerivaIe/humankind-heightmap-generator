@@ -23,8 +23,6 @@ public class Tile : MonoBehaviour
     void Start() {
         //Happens after Awake() because tile positioning occurs there
         Triangulate();
-        Text text = gameObject.GetComponentInChildren<Text>();
-        text.text = hex.q + "," + hex.r + "," + hex.s;
     }
 
     public void Triangulate () {
@@ -32,13 +30,12 @@ public class Tile : MonoBehaviour
 		vertices.Clear();
 		triangles.Clear();
         colours.Clear();
-        Vector3 center = gameObject.transform.position;
+        Vector3 center = new Vector3(0,0,0); //gameObject.transform.position incorrect because Mesh seems to be local position in respect to its gameObject!;
 		for (int i = 0; i < 6; i++) {
 			AddTriangle(center, center + Hex.corners[i], center + Hex.corners[i+1]);
-            //AddTriangleColor();
-            //Debug.Log("i = " + i + ". Added triangle with center and two corners " + (vert1) + " and " + (vert2));
+            AddTriangleColor();
+            //Debug.Log("i = " + i + ". Added triangle with center = " + center + " and two corners " + (center + Hex.corners[i]) + " and " + (center + Hex.corners[i+1]));
 		}
-        //Debug.Log("Triangulated tile");
 		tileMesh.vertices = vertices.ToArray();
 		tileMesh.triangles = triangles.ToArray();
         tileMesh.colors = colours.ToArray();
@@ -65,9 +62,4 @@ public class Tile : MonoBehaviour
             colours.Add(newCol);
         }
 	}
-
-    void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(gameObject.transform.position,0.5f);
-    }
 }
