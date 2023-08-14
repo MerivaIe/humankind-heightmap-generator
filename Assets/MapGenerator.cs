@@ -45,14 +45,14 @@ public class MapGenerator : MonoBehaviour
         int bottom = mapHeight;
         int index = 0;
         map = new Hashtable();
-        for (int r = top; r <= bottom; r++) { // pointy top
+        for (int r = top; r < bottom; r++) { // pointy top
             int r_offset = (int)Mathf.Floor((float)r/2.0f); // or r>>1
-            for (int q = left - r_offset; q <= right - r_offset; q++) {
+            for (int q = left - r_offset; q < right - r_offset; q++) {
                 Tile tile = Instantiate<Tile>(tilePrefab);
                 Hex hex = new Hex(q,r,-q-r);
                 tile.hex = hex;
                 hex.tile = tile;
-                Debug.Log("Adding new hex to map with index " + index + " with current position equal to " + tile.transform.position + "and Hex q r s = " + tile.hex.q +","+tile.hex.r + "," + tile.hex.s);
+                Debug.Log("Adding new hex to map with index " + index + " with current position equal to " + tile.gameObject.transform.position + "and Hex q r s = " + tile.hex.q +","+tile.hex.r + "," + tile.hex.s);
                 PositionTile(tile);
                 map.Add(index, tile);
                 /*foreach(Hex rootHex in islandRootHexes) {
@@ -96,8 +96,8 @@ public class MapGenerator : MonoBehaviour
 
     void PositionTile(Tile tile) {
         Point point = layout.HexToPixel(tile.hex);
-        tile.transform.position = new Vector3((float)point.x,(float)point.y,0f);
-        Debug.Log("Reositioned tile to position " + tile.transform.position);
+        tile.gameObject.transform.position = new Vector3((float)point.x,(float)point.y,0f);
+        Debug.Log("Repositioned tile to position " + tile.gameObject.transform.position);
     }
 
     // Start is called before the first frame update
@@ -106,6 +106,6 @@ public class MapGenerator : MonoBehaviour
         Debug.Log("Height colour 11 = " + Height.hexColours[11]);
         Debug.Log("Height colour -3 = " + Height.hexColours[-3]);
         Debug.Log("Height land type for -4 = " + Height.landTypes[-4]);
-        UnityEditor.SceneView.RepaintAll();
+        //UnityEditor.SceneView.RepaintAll();
     }
 }

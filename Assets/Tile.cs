@@ -65,4 +65,9 @@ public class Tile : MonoBehaviour
             colours.Add(newCol);
         }
 	}
+
+    void OnDrawGizmos() {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(gameObject.transform.position,0.5f);
+    }
 }

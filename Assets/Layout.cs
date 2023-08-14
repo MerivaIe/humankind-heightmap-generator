@@ -20,7 +20,7 @@ struct Layout
     {
         Orientation M = orientation;
         double x = (M.f0 * h.q + M.f1 * h.r) * size.x;
-        double y = (M.f2 * h.q + M.f3 * h.r) * size.y;
+        double y = (M.f2 * h.q + M.f3 * h.r) * -size.y; //changed to negative to correct existing library from Red Blob games
         return new Point(x + origin.x, y + origin.y);
     }
 
