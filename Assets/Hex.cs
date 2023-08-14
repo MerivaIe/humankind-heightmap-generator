@@ -6,7 +6,7 @@ using UnityEngine;
 public struct Hex
 {
     
-	public const float outerRadius = 1f;
+	public const float outerRadius = 2f; //dependent on size defined in MapGenerator; hardcoding for PoC for now
 	public const float innerRadius = outerRadius * 0.866025404f;
     public static Vector3[] corners = {
 		new Vector3(0f, outerRadius, 0f),
@@ -17,6 +17,10 @@ public struct Hex
 		new Vector3(-innerRadius, 0.5f * outerRadius, 0f),
         new Vector3(0f, outerRadius, 0f)
 	};
+    #nullable enable
+    public Tile? tile;
+    #nullable disable
+    public int height;
 
     public Hex(int q, int r, int s)
     {
@@ -24,10 +28,17 @@ public struct Hex
         this.r = r;
         this.s = s;
         if (q + r + s != 0) throw new ArgumentException("q + r + s must be 0");
+        tile = null;
+        height = -4; //default to deep Ocean
     }
     public readonly int q;
     public readonly int r;
     public readonly int s;
+
+    public bool Equals(Hex b)
+    {
+        return q == b.q && r == b.r && s == b.s;
+    }
 
     public Hex Add(Hex b)
     {
