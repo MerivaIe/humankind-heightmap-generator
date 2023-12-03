@@ -10,15 +10,12 @@ public class MapGenerator : MonoBehaviour
     public int mapTerritorySize = 35;
     public Tile tilePrefab;
 
-    private Hashtable map;
+    private Dictionary<int,Tile> map;
     private Layout layout;
     private List<Hex> islandRootHexes;
 
     void Awake()
     {
-//is there some factor of size that matters here? something fishy about the spheres not being on the center of hexes
-//^tested and the hizmos are not on the same places as the meshes.....
-//*2????
         //For 9 players, identify root hexes for two "rows" of islands; each row will either have 4 or 5 islands in it:
         islandRootHexes = new List<Hex>();
         int northernColumnCount = Random.Range(4,6); //randomly select either 4 or 5
@@ -45,7 +42,7 @@ public class MapGenerator : MonoBehaviour
         int top = 0;
         int bottom = mapHeight;
         int index = 0;
-        map = new Hashtable();
+        map = new Dictionary<int,Tile>();
         for (int r = top; r < bottom; r++) { // pointy top
             int r_offset = (int)Mathf.Floor((float)r/2.0f); // or r>>1
             for (int q = left - r_offset; q < right - r_offset; q++) {
@@ -56,22 +53,19 @@ public class MapGenerator : MonoBehaviour
                 Debug.Log("Adding new hex to map with index " + index + " with current position equal to " + tile.gameObject.transform.position + "and Hex q r s = " + tile.hex.q +","+tile.hex.r + "," + tile.hex.s);
                 PositionTile(tile);
                 map.Add(index, tile);
-                /*foreach(Hex rootHex in islandRootHexes) {
-                    if (hex.Equals(rootHex)) {
-                        hex.height = 2;
-                    }
-                }*/
                 index++;
             }
         }
+
+        //CreateIslands();
     }
 
     //Debugging option to draw hex locations when gameObject is selected:
     void OnDrawGizmosSelected(){
         if (map != null) {
-            foreach (DictionaryEntry kvPair in map) {
+            foreach (KeyValuePair<int,Tile> kvPair in map) {
                 bool root = false;
-                Tile tile = (Tile)kvPair.Value;
+                Tile tile = kvPair.Value;
                 foreach (Hex hex in islandRootHexes) {
                     if (tile.hex.Equals(hex)) {root = true;}
                 }
@@ -97,4 +91,21 @@ public class MapGenerator : MonoBehaviour
         Debug.Log("Height land type for -4 = " + Height.landTypes[-4]);
         //UnityEditor.SceneView.RepaintAll();
     }
+
+    /*void CreateIslands() {
+        foreach (KeyValuePair<int,Tile> kvPair in map) {
+            Tile tile = kvPair.Value;
+
+            foreach(Hex rootHex in islandRootHexes) {
+                if (tile.hex.Equals()) {
+
+                }
+            }
+        }
+
+            if (hex.Equals(rootHex)) {
+                hex.height = 2;
+            }
+        }
+    }*/
 }
